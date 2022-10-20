@@ -43,6 +43,9 @@ DB_USERNAME=
 
 # Contraseña para la conexion a Postgres
 DB_PASSWORD=
+
+# Host de tu servidor local para servir archivos
+HOST_API=http://localhost:3000/api
 ```
 
 ## Corriendo la app
