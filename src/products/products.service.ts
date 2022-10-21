@@ -13,6 +13,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { Product, ProductImage } from './entities';
+import { User } from '../auth/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -26,12 +27,13 @@ export class ProductsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
     try {
       const { images = [], ...rest } = createProductDto;
 
       const product = this.productRepository.create({
         ...rest,
+        user,
         images: images.map((url) =>
           this.productImageRepository.create({ url }),
         ),
@@ -99,7 +101,7 @@ export class ProductsService {
     };
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
     const { images, ...toUpdate } = updateProductDto;
 
     const product = await this.productRepository.preload({
@@ -128,6 +130,7 @@ export class ProductsService {
         );
       }
 
+      product.user = user;
       await queryRunner.manager.save(product);
 
       //? Se confirma la trasacción y se cierra el query runner
@@ -161,11 +164,11 @@ export class ProductsService {
   }
 
   async deleteAllProducts() {
-    if (process.env.NODE_ENV === 'development') {
+    /* if (process.env.NODE_ENV === 'development') {
       throw new BadRequestException(
         'Este endpoint es válido solo en modo desarrollo',
       );
-    }
+    } */
 
     const query = this.productRepository.createQueryBuilder('product');
     try {

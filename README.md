@@ -46,6 +46,9 @@ DB_PASSWORD=
 
 # Host de tu servidor local para servir archivos
 HOST_API=http://localhost:3000/api
+
+# Secret para firmar los JWT
+JWT_SECRET=
 ```
 
 ## Corriendo la app
